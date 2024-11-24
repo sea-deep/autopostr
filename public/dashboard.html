@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoPostr</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+
+<body>
+    <div class="container">
+        <a class="logout-link" href="/auth/logout">Log out</a>
+
+        <a href="/">
+            <h1>AutoPostr</h1>
+        </a>
+        <p id="feature">Welcome to your Dashboard.</p>
+        <button class="add-task" onclick="openForm()">Create task</button>
+        <div class="task-container">
+            <p id="task-heading">Your Tasks:</p>
+            <ul id="task-listitems"></ul>
+        </div>
+    </div>
+
+    <!-- Centered Dialog Form -->
+    <div id="taskDialog" class="dialog hidden">
+        <div class="dialog-content">
+            <div class="form-container">
+                <form id="task-form">
+                    <div class="form-group">
+                        <label for="folder-url">Google Drive Folder URL</label>
+                        <input type="url" id="folder-url" name="folder-url" placeholder="Enter Folder URL" required>
+                        <span id="folder-url-feedback" class="feedback"></span> 
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-count">Number of Videos to Post Everyday</label>
+                        <input type="number" id="video-count" name="video-count" placeholder="Enter number of videos" required>
+                        <span id="video-count-feedback" class="feedback"></span> 
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-title">Title of the video (optional)</label>
+                        <input type="text" id="video-title" name="video-title" placeholder="Enter title">
+                        <span id="video-title-feedback" class="feedback"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-desc">Description of the video (optional)</label>
+                        <textarea id="video-desc" name="video-desc" placeholder="Enter description" rows="2"></textarea>
+                        <span id="video-desc-feedback" class="feedback"></span> 
+                    </div>
+                    <div class="form-group">
+                        <label for="video-tags">Tags of the video separate using comma [,] (optional)</label>
+                        <input type="text" id="video-tags" name="video-tags" placeholder="Enter tags">
+                        <span id="video-tags-feedback" class="feedback"></span> 
+                    </div>
+                    <div class="form-group">
+                        <b>TIP:</b>
+                        <div id="var-help" name="var-help">
+                            <u>Variables you can use in title & description (case-sensitive):</u><br>
+                            <code>:filename:</code> -> file name (without extension)<br>
+                            <code>:vidindex:</code> -> the index of the current uploading vid (eg:- it'll be 1 for 1st video)<br>
+                        </div>
+                    </div>
+                    <button id="create-task-btn" type="button" onclick="addTask(event)">Add Task</button>
+                    <button type="button" onclick="closeForm(event)" class="cancel-button">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashScript.js"></script>
+</body>
+
+
+
+</html>
