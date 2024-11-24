@@ -43,12 +43,14 @@ async function uploadVideo(user, task) {
         let description = (task.description === "") ? '' : task.description.replaceAll(":filename:", videoFileName).replaceAll(':vidindex:', newIndex);
         console.log(`Downloading video: ${videoFileName}`);
         const vid = await googleDriveDownload(drive, videoFileId);
-
+        console.log("Uploading video:\n", title, "\n",
+            description, "\n",
+            task.tags);
         const response = await youtube.videos.insert({
             part: 'snippet,status',
             requestBody: {
                 snippet: {
-                    title: title,
+                    title: formatTitle(title),
                     description: description,
                     tags: task.tags
                 },
@@ -69,7 +71,7 @@ async function uploadVideo(user, task) {
         return task;
     } catch (error) {
         console.error('Error uploading video:', error);
-        return task; // Return task even if upload fails
+        return task;
     }
 }
 
@@ -111,3 +113,12 @@ function calculateNextUploadTime(videosPerDay) {
 
 
 module.exports = { uploadVideo };
+
+
+function formatTitle(title) {
+    let formattedTitle = title.replace(/_/g, ' ');
+    if (formattedTitle.length > 100) {
+        formattedTitle = formattedTitle.slice(0, 100);
+    }
+    return formattedTitle;
+}

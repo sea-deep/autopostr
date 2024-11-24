@@ -1,14 +1,18 @@
+require('dotenv').config();
+
 const express = require('express');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
 const router = express.Router();
 
+
+const env = process.env.ENVIRONMENT;
 // Google OAuth Strategy Configuration
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://autopostr.up.railway.app/auth/callback", 
+    callbackURL: (env === "dev") ? "http://localhost:3000/auth/callback" : "https://autopostr.up.railway.app/auth/callback", 
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ googleId: profile.id });
