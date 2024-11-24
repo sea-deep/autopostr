@@ -135,14 +135,14 @@ async function removeTask(taskID) {
 function openForm() {
     const dialog = document.getElementById('taskDialog');
     dialog.classList.remove('hidden');
-    document.body.classList.add('no-scroll');
+    // document.body.classList.add('no-scroll');
 }
 
 function closeForm(event) {
     if (event) event.preventDefault();
     const dialog = document.getElementById('taskDialog');
     dialog.classList.add('hidden');
-    document.body.classList.remove('no-scroll');
+    // document.body.classList.remove('no-scroll');
 
     const form = document.getElementById('task-form');
     form.reset();
