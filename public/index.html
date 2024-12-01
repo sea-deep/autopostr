@@ -1,29 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Home</title>
+    <style>
+        /* Navigation styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #2d0000;
+            padding: 10px 20px;
+            border-bottom-left-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
 
-    <title>AutoPostr</title>
-    <link rel="stylesheet" href="styles.css">
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .navbar ul li {
+            margin: 0;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #b50000;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e60000;
+        }
+
+        /* Responsive styles */
+        @media (min-width: 600px) {
+            .navbar ul {
+                flex-direction: row;
+                gap: 15px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <div class="container">
-        <a href="/" class="logo-container">
-            <img src="favicon.ico" alt="Logo" class="logo">
-            <h1>AutoPostr</h1>
-        </a>
-        <h3>Schedule videos on YouTube</h3>
-        <p id="feature">Use a Google Drive folder to randomly schedule a specific number of videos to post each day.</p>
-        <br />
-        <a class="dashboard-link" href="/dashboard" style="display: none;">Go to Dashboard</a>
-        <a class="login" href="/auth" style="display: none;">Sign in with Google</a>
-        <a class="logout-link" style="display: none;" href="/auth/logout">Log out</a>
+    <div class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/legal">Legal</a></li>
+            <li><a href="/repo">Repo</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
     </div>
-
-    <script src="script.js"></script>
+    <div class="container">
+        <h1>Welcome to AutoPostr</h1>
+        <p>Your one-stop solution for managing your tasks and automating uploads!</p>
+    </div>
 </body>
-
 </html>
