@@ -1,7 +1,6 @@
 const { google } = require('googleapis');
 const { PassThrough } = require('stream');
 
-
 async function uploadVideo(user, task) {
     const oauth2Client = new google.auth.OAuth2();
     oauth2Client.setCredentials({
@@ -25,27 +24,24 @@ async function uploadVideo(user, task) {
 
         if (res.data.files.length === 0) {
             console.log('No videos found in the folder.');
-            return task;
+            return null; // Returning null here indicates the task is completed or invalid
         }
 
         const videoFile = res.data.files[videoIndex];
         if (!videoFile) {
             console.log('No video found at the current index.');
-            return null;
+            return null; // No video at the index to upload, so the task is completed
         }
 
         const videoFileId = videoFile.id;
         const videoFileName = videoFile.name.split('.').slice(0, -1).join('.');
 
-        // For params
         let newIndex = videoIndex + 1;
         let title = (task.title === "") ? videoFileName : task.title.replaceAll(":filename:", videoFileName).replaceAll(':vidindex:', newIndex);
         let description = (task.description === "") ? '' : task.description.replaceAll(":filename:", videoFileName).replaceAll(':vidindex:', newIndex);
         console.log(`Downloading video: ${videoFileName}`);
         const vid = await googleDriveDownload(drive, videoFileId);
-        console.log("Uploading video:\n", title, "\n",
-            description, "\n",
-            task.tags);
+
         const response = await youtube.videos.insert({
             part: 'snippet,status',
             requestBody: {
@@ -63,17 +59,18 @@ async function uploadVideo(user, task) {
             },
         });
 
-        task.totalUploaded += 1;
-        task.todayUploaded += 1;
-        task.nextUploadTime = calculateNextUploadTime(task.dailyLimit); // Recalculate the next upload time
-
         console.log(`Video uploaded successfully- Video URL: https://youtu.be/${response.data.id}`);
-        return task;
+      //  return task;
     } catch (error) {
         console.error('Error uploading video:', error);
-        return task;
+      } finally {
+        task.totalUploaded += 1;
+        task.todayUploaded += 1;
+        task.nextUploadTime = calculateNextUploadTime(task.dailyLimit);
     }
+    return task;
 }
+
 
 async function googleDriveDownload(drive, fileId) {
     const downloadStream = new PassThrough();
@@ -104,12 +101,15 @@ function extractDriveFolderId(url) {
     return match ? match[1] : null;
 }
 
-function calculateNextUploadTime(videosPerDay) {
-    const interval = (24 * 60) / videosPerDay; // Base interval in minutes
-    const randomFactor = 0.75 + Math.random() * 1.5; // Random factor between 0.75 and 2.25
-    const adjustedInterval = interval * randomFactor; // Adjust interval randomly
-    return new Date(Date.now() + adjustedInterval * 60 * 1000); // Convert to milliseconds
+function calculateNextUploadTime(videosPerDay, lastUploadTime = Date.now()) {
+    const interval = (24 * 60) / videosPerDay;
+    const currTime = (lastUploadTime % (24 * 60 * 60 * 1000)) / (60 * 1000);
+    const remaining = videosPerDay - Math.floor(currTime / interval);
+    const randFactor = remaining > 5 ? 0.75 + Math.random() * 1.5 : 1.0 + Math.random() * 0.5;
+    const nextTime = lastUploadTime + interval * randFactor * 60 * 1000;
+    return new Date(nextTime);
 }
+
 
 
 module.exports = { uploadVideo };
