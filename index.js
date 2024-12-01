@@ -12,7 +12,6 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI);
 
 // Session middleware with MongoDB store
@@ -39,6 +38,22 @@ app.get('/dashboard', async (req, res) => {
     const filePath = path.join(__dirname, 'public', 'dashboard.html');
     res.sendFile(filePath);
 });
+
+app.get('/legal', async (req, res) => {
+    const filePath = path.join(__dirname, 'public', 'legal.html');
+    res.sendFile(filePath);
+});
+
+app.get('/repo', async (req, res) => {
+    res.redirect('https://github.com/sea-deep/autopostr')
+});
+
+app.use((req, res) => {
+    const filePath = path.join(__dirname, 'public', '404.html');
+    res.status(404).sendFile(filePath);
+});
+
+
 
 taskManager();
 
