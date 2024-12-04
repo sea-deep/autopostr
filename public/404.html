@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 | Page Not Found</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,6 +75,16 @@
         <p>Sorry, the page you're looking for doesn't exist. It might have been removed or the URL might be incorrect.</p>
         <a href="/">Go Back to Home</a>
     </div>
+    <div class="link-container">
+        <div class="links">
+            <a class="link-item" href="/">Home</a>
+            <a class="link-item" href="/repo">GitHub</a>
+            <a class="link-item" href="/legal">Legal</a>
+        </div>
+        <button class="link-toggle" onclick="toggleLinks()">≡</button>
+
+    </div>
+    <script src="script.js"></script>
 </body>
 
 </html>

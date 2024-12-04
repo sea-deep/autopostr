@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>AutoPostr</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -18,9 +17,17 @@
         <h3>Schedule videos on YouTube</h3>
         <p id="feature">Use a Google Drive folder to randomly schedule a specific number of videos to post each day.</p>
         <br />
-        <a class="dashboard-link" href="/dashboard" style="display: none;">Go to Dashboard</a>
-        <a class="login" href="/auth" style="display: none;">Sign in with Google</a>
-        <a class="logout-link" style="display: none;" href="/auth/logout">Log out</a>
+        <a class="dashboard-link" href="/dashboard">Go to Dashboard</a>
+        <a class="login" href="/auth">Sign in with Google</a>
+    </div>
+    <div class="link-container">
+        <div class="links">
+            <a class="link-item" href="/">Home</a>
+            <a class="link-item" href="/repo">GitHub</a>
+            <a class="link-item" href="/legal">Legal</a>
+        </div>
+        <button class="link-toggle" onclick="toggleLinks()">≡</button>
+
     </div>
 
     <script src="script.js"></script>

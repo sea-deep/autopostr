@@ -7,6 +7,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         document.querySelector('.add-task').style.display = 'block';
         updateTasks();
+
+        const linksContainer = document.querySelector('.links');
+
+      const dashboardLink = document.createElement('a');
+      dashboardLink.className = 'link-item animate-link';
+      dashboardLink.href = '/dashboard';
+      dashboardLink.textContent = 'Dashboard';
+
+      const logoutLink = document.createElement('a');
+      logoutLink.className = 'link-item animate-link';
+      logoutLink.href = '/auth/logout';
+      logoutLink.textContent = 'Log out';
+
+      linksContainer.appendChild(dashboardLink);
+      linksContainer.appendChild(logoutLink);
     } catch (error) {
         console.error('Error fetching auth status:', error);
     }
@@ -72,11 +87,9 @@ async function addTask(event) {
         const data = await response.json();
 
         if (response.ok) {
-            console.log('Task added:', data.tasks);
             updateTasks();
             closeForm();
         } else {
-            console.log('Error adding task:', data.error || 'Unknown error');
             folderFeedback.textContent = data.error || 'Error adding task. Please try again.';
             folderFeedback.classList.add('active');
         }
@@ -156,3 +169,10 @@ function closeForm(event) {
     addTaskButton.textContent = 'Add Task'; 
 
 }
+
+
+function toggleLinks() {
+    const links = document.querySelector('.link-container .links');
+    links.classList.toggle('show');
+  }
+  

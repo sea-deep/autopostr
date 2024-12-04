@@ -8,35 +8,33 @@ const router = express.Router();
 
 
 const env = process.env.ENVIRONMENT;
-// Google OAuth Strategy Configuration
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: (env === "dev") ? "http://localhost:3000/auth/callback" : "https://autopostr.up.railway.app/auth/callback", 
+    callbackURL: process.env.URL + "/auth/callback",
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ googleId: profile.id });
         const userName = profile.displayName || 'noname';
 
         if (!user) {
-            // If the user doesn't exist, create a new one
             user = await User.create({
                 googleId: profile.id,
                 name: userName,
                 email: profile.emails[0].value,
-                accessToken, // Save the accessToken
-                refreshToken, // Save the refreshToken
+                accessToken,
+                refreshToken,
             });
         } else {
-            // If the user exists, update the tokens
             user.accessToken = accessToken;
             user.refreshToken = refreshToken;
             await user.save();
         }
 
-        return done(null, user); 
+        return done(null, user);
     } catch (error) {
-        return done(error); 
+        return done(error);
     }
 }));
 
@@ -49,23 +47,21 @@ passport.deserializeUser(async (id, done) => {
 
 
 router.get('/', (req, res) => {
-    console.log('Redirecting to Google OAuth');
     passport.authenticate('google', {
         scope: [
-            'profile',
-            'email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/youtube.upload',
-            'https://www.googleapis.com/auth/youtube',
-            'https://www.googleapis.com/auth/youtubepartner',
-            'https://www.googleapis.com/auth/drive',
-            'https://www.googleapis.com/auth/youtube.force-ssl'
-        ]
-    })(req, res);  // Fix the syntax here
+            'https://www.googleapis.com/auth/drive.readonly',
+            //  'offline'
+        ],
+        accessType: 'offline', prompt: 'consent'
+    })(req, res);
 });
 
-// Google OAuth callback route
+
 router.get('/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-    res.redirect('/dashboard');  // On success, redirect to dashboard
+    res.redirect('/dashboard');
 });
 
 

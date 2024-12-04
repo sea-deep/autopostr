@@ -23,14 +23,12 @@ async function uploadVideo(user, task) {
         });
 
         if (res.data.files.length === 0) {
-            console.log('No videos found in the folder.');
-            return null; // Returning null here indicates the task is completed or invalid
+            return null; // the task is completed or invalid
         }
 
         const videoFile = res.data.files[videoIndex];
         if (!videoFile) {
-            console.log('No video found at the current index.');
-            return null; // No video at the index to upload, so the task is completed
+            return null; // No video at the index to upload
         }
 
         const videoFileId = videoFile.id;
@@ -39,8 +37,7 @@ async function uploadVideo(user, task) {
         let newIndex = videoIndex + 1;
         let title = (task.title === "") ? videoFileName : task.title.replaceAll(":filename:", videoFileName).replaceAll(':vidindex:', newIndex);
         let description = (task.description === "") ? '' : task.description.replaceAll(":filename:", videoFileName).replaceAll(':vidindex:', newIndex);
-        console.log(`Downloading video: ${videoFileName}`);
-        const vid = await googleDriveDownload(drive, videoFileId);
+       const vid = await googleDriveDownload(drive, videoFileId);
 
         const response = await youtube.videos.insert({
             part: 'snippet,status',
@@ -59,9 +56,7 @@ async function uploadVideo(user, task) {
             },
         });
 
-        console.log(`Video uploaded successfully- Video URL: https://youtu.be/${response.data.id}`);
-      //  return task;
-    } catch (error) {
+      } catch (error) {
         console.error('Error uploading video:', error);
       } finally {
         task.totalUploaded += 1;

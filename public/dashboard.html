@@ -17,7 +17,17 @@
             <p id=task-heading>Your Tasks:</p>
             <ul id=task-listitems></ul>
         </div>
-    </div><!-- Centered Dialog Form -->
+    </div>
+    <div class="link-container">
+        <div class="links">
+            <a class="link-item" href="/">Home</a>
+            <a class="link-item" href="/repo">GitHub</a>
+            <a class="link-item" href="/legal">Legal</a>
+        </div>
+        <button class="link-toggle" onclick="toggleLinks()">≡</button>
+
+    </div>
+    <!-- Centered Dialog Form -->
     <div id=taskDialog class="dialog hidden">
         <div class=dialog-content>
             <div class=form-container>
@@ -47,7 +57,7 @@
                 </form>
             </div>
         </div>
-    </div><a class=logout-link href=/auth/logout>Log out</a>
+      
     <script src="dashScript.js"></script>
 </body>
 

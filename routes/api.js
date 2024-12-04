@@ -46,7 +46,7 @@ router.get('/viewtasks', isAuthenticated, async (req, res) => {
     }
 });
 
-// New route to delete task by driveURL
+
 router.delete('/deletetask', isAuthenticated, async (req, res) => {
     const { taskID } = req.body;
     if (!taskID) {
@@ -59,7 +59,7 @@ router.delete('/deletetask', isAuthenticated, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Find the task to delete by matching the driveURL
+
         const taskIndex = user.tasks.findIndex(task => task.taskID === taskID);
         if (taskIndex === -1) {
             return res.status(404).json({ error: 'Task with specified taskID not found' });

@@ -200,7 +200,7 @@ button {
     margin-right: 10px
 }
 
-.logout-link,.task-action {
+.task-action {
     background-color: red;
     border-radius: 50px
 }
@@ -216,32 +216,6 @@ button {
     transition: background-color .3s ease
 }
 
-.logout-link {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    max-width: 250px;
-    padding: 10px 20px;
-    font-size: 1.5em;
-    color: #fff;
-    border: #970000 solid 2px;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color .3s ease,transform .3s ease
-}
-
-.logout-link:hover {
-    background-color: #e60000
-}
-
-.logout-link:focus {
-    outline: 0
-}
-
-.logout-link:active {
-    background-color: #b50000;
-    transform: scale(.95)
-}
 
 body.no-scroll {
     overflow: hidden
@@ -307,4 +281,104 @@ body.no-scroll {
 .feedback.active {
     visibility: visible;
     height: auto
+}
+
+
+.link-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    max-width: 150px;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-end; /* Align items to the end horizontally */
+    gap: 5px;
+}
+
+.link-container .links {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.link-container .links.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.link-item {
+    opacity: 0;
+    transform: translateX(10px);
+    animation: slideIn 0.3s ease forwards;
+    font-size: 1.5em;
+    background-color: #ffffff22;
+    color: #fff;
+    border: white 2px solid;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.link-item:hover {
+    background-color: #e60000; /* Hover effect for links */
+}
+
+.link-item:active {
+    background-color: #b50000; /* Active state for links */
+    transform: scale(0.95);
+}
+
+.link-item:nth-child(1) { animation-delay: 0.1s; }
+.link-item:nth-child(2) { animation-delay: 0.2s; }
+.link-item:nth-child(3) { animation-delay: 0.3s; }
+.link-item:nth-child(4) { animation-delay: 0.4s; }
+.link-item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.link-toggle {
+    margin: 0; /* Remove any unintended margins */
+    padding: 0;
+    width: 65px;
+    height: 65px;
+    font-size: 50px;
+    background-color: #3a0000;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: 2px solid white;
+    cursor: pointer;
+}
+
+
+.link-toggle:hover {
+    background-color: #e60000;
+}
+
+.link-toggle:active {
+    background-color: #b50000;
+    transform: scale(0.95);
 }
