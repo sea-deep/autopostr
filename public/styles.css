@@ -323,7 +323,7 @@ body.no-scroll {
     transform: translateX(10px);
     animation: slideIn 0.3s ease forwards;
     font-size: 1.5em;
-    background-color: #ffffff22;
+    background-color: #4d0000;
     color: #fff;
     border: white 2px solid;
     text-decoration: none;
