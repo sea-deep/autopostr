@@ -2,12 +2,22 @@ const { google } = require('googleapis');
 const { PassThrough } = require('stream');
 
 async function uploadVideo(user, task) {
-    const oauth2Client = new google.auth.OAuth2();
+    const oauth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
     oauth2Client.setCredentials({
         access_token: user.accessToken,
         refresh_token: user.refreshToken,
     });
-
+    try {
+        const tokenInfo = await oauth2Client.getAccessToken();
+        if (!tokenInfo || tokenInfo.res?.status !== 200) {
+            const { credentials } = await oauth2Client.refreshAccessToken();
+            user.accessToken = credentials.access_token;
+            await user.save(); 
+        }
+    } catch (error) {
+        console.error('Error refreshing access token:', error);
+        throw new Error('Failed to refresh access token');
+    }
     const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
     const folderUrl = task.driveURL;
     const videoIndex = task.totalUploaded;
@@ -37,9 +47,9 @@ async function uploadVideo(user, task) {
         let newIndex = videoIndex + 1;
         let title = (task.title === "") ? videoFileName : task.title.replaceAll(":filename:", videoFileName).replaceAll(':vidindex:', newIndex);
         let description = (task.description === "") ? '' : task.description.replaceAll(":filename:", videoFileName).replaceAll(':vidindex:', newIndex);
-       const vid = await googleDriveDownload(drive, videoFileId);
+        const vid = await googleDriveDownload(drive, videoFileId);
 
-        const response = await youtube.videos.insert({
+        await youtube.videos.insert({
             part: 'snippet,status',
             requestBody: {
                 snippet: {
@@ -56,9 +66,9 @@ async function uploadVideo(user, task) {
             },
         });
 
-      } catch (error) {
+    } catch (error) {
         console.error('Error uploading video:', error);
-      } finally {
+    } finally {
         task.totalUploaded += 1;
         task.todayUploaded += 1;
         task.nextUploadTime = calculateNextUploadTime(task.dailyLimit);

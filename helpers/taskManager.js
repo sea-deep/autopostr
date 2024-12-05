@@ -40,13 +40,16 @@ async function taskManager() {
 
         // timeout to upload video at scheduled time
         activeTimeout = setTimeout(async () => {
-            const updatedTask = await uploadVideo(user, task);
+            const execution = await uploadVideo(user, task);
             const taskIndex = user.tasks.findIndex(t => t.taskID === task.taskID);
-            user.tasks[taskIndex] = updatedTask;
-
+            if (!execution) {
+                delete user.tasks[taskIndex];
+            } else {
+                user.tasks[taskIndex] = execution;
+            }
 
             await user.save();
-     
+
             activeTimeout = null;
             taskManager(); // continue the task manager
 
