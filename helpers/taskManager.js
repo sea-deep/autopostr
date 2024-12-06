@@ -3,58 +3,48 @@ const { uploadVideo } = require('./youtube');
 
 let activeTimeout = null;
 
-async function taskManager() {
-    if (activeTimeout) {
-        clearTimeout(activeTimeout);
-    }
+const taskManager = async () => {
+    try {
+        const users = await User.find({ 'tasks.0': { $exists: true } });
 
-    // Fetch all users
-    const users = await User.find();
+        for (const user of users) {
+            for (const task of user.tasks) {
+                const timeDifference = new Date(task.nextUploadTime) - Date.now();
 
-    let nearestTask = null;
-    let nearestTimeDiff = Infinity;
+                if (timeDifference <= 0) {
+                    const execution = await executeTask(task);
 
-    // Loop over all users and their tasks
-    for (const user of users) {
-        for (const task of user.tasks) {
-            const nextUploadTime = task.nextUploadTime;
-            const timeDifference = nextUploadTime - new Date();
+                    const taskIndex = user.tasks.findIndex(t => t.taskID === task.taskID);
+                    if (!execution) {
+                        user.tasks.splice(taskIndex, 1); // Remove the task if execution failed
+                    } else {
+                        user.tasks[taskIndex] = execution; // Update the task with the new execution details
+                    }
 
-            if (timeDifference < 0) {
-                // Task's next upload time is in the past, recalculate it
-                task.nextUploadTime = calculateNextUploadTime(task.dailyLimit);
-                await user.save();
-            }
+                    await user.save();
+                } else {
+                    setTimeout(async () => {
+                        const execution = await executeTask(task);
 
-            // Find the task with the nearest future upload time
-            if (timeDifference > 0 && timeDifference < nearestTimeDiff) {
-                nearestTimeDiff = timeDifference;
-                nearestTask = { user, task, timeDifference };
+                        const taskIndex = user.tasks.findIndex(t => t.taskID === task.taskID);
+                        if (!execution) {
+                            user.tasks.splice(taskIndex, 1); // Remove the task if execution failed
+                        } else {
+                            user.tasks[taskIndex] = execution; // Update the task with the new execution details
+                        }
+
+                        await user.save();
+
+                        activeTimeout = null;
+                        taskManager(); // Continue the task manager
+
+                    }, timeDifference); // Set the timeout for the task's upload
+                }
             }
         }
+    } catch (error) {
+        console.error('Error in taskManager:', error);
     }
-
-    if (nearestTask) {
-        const { user, task, timeDifference } = nearestTask;
-
-
-        // timeout to upload video at scheduled time
-        activeTimeout = setTimeout(async () => {
-            const execution = await uploadVideo(user, task);
-            const taskIndex = user.tasks.findIndex(t => t.taskID === task.taskID);
-            if (!execution) {
-                delete user.tasks[taskIndex];
-            } else {
-                user.tasks[taskIndex] = execution;
-            }
-
-            await user.save();
-
-            activeTimeout = null;
-            taskManager(); // continue the task manager
-
-        }, timeDifference); // Set the timeout for the task's upload
-    }
-}
+};
 
 module.exports = taskManager;
