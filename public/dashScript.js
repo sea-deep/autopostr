@@ -94,7 +94,7 @@ async function addTask(event) {
             folderFeedback.classList.add('active');
         }
     } catch (error) {
-        console.error('Network or other error:', error);
+        console.error('error:', error);
         folderFeedback.textContent = 'An error occurred while adding the task. Please try again.';
         folderFeedback.classList.add('active');
     }

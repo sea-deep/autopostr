@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const linksContainer = document.querySelector('.links');
 
-    // Add links dynamically if user is logged in
+    // Add extra links in page if user is logged in
     if (data.loggedIn) {
       dashButton.style.display = 'block';
 
