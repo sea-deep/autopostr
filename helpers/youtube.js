@@ -117,7 +117,7 @@ function calculateNextUploadTime(videosPerDay, lastUploadTime = Date.now()) {
 
 
 
-module.exports = { uploadVideo };
+module.exports = { uploadVideo, calculateNextUploadTime };
 
 
 function formatTitle(title) {
